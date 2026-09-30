@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Schul-Toilettenverwaltung</title>
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #f2f4f8;
+            margin: 0;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 850px;
+            margin: auto;
+        }
+
+        h1 {
+            text-align: center;
+        }
+
+        .card {
+            background: white;
+            padding: 20px;
+            margin: 15px 0;
+            border-radius: 15px;
+            box-shadow: 0 3px 12px rgba(0,0,0,0.1);
+        }
+
+        input, select, button {
+            width: 100%;
+            padding: 12px;
+            margin-top: 8px;
+            margin-bottom: 12px;
+            border-radius: 8px;
+            border: 1px solid #ccc;
+            box-sizing: border-box;
+        }
+
+        button {
+            background: #222;
+            color: white;
+            border: none;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        button:hover {
+            background: #444;
+        }
+
+        .active {
+            background: #fff3cd;
+            border-left: 5px solid #ffbf00;
+            padding: 12px;
+            margin-top: 10px;
+        }
+
+        .finished {
+            background: #e8f5e9;
+            border-left: 5px solid #2e7d32;
+            padding: 12px;
+            margin-top: 10px;
+        }
+
+        .danger {
+            background: #b00020;
+        }
+
+        .danger:hover {
+            background: #d0002b;
+        }
+
+        #message {
+            font-weight: bold;
+            text-align: center;
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="container">
+
+    <h1>🚻 Schul-Toilettenverwaltung</h1>
+
+    <div class="card">
+        <h2>Toilettengang eintragen</h2>
+
+        <label>Schüler-ID</label>
+        <input id="studentId" placeholder="z. B. S-102">
+
+        <label>Lehrkraft</label>
+        <input id="teacher" placeholder="Name der Lehrkraft">
+
+        <button onclick="startToilet()">Toilettengang erlauben</button>
+
+        <p id="message"></p>
+    </div>
+
+
+    <div class="card">
+        <h2>Aktuelle Toilettengänge</h2>
+        <div id="activeList"></div>
+    </div>
+
+
+    <div class="card">
+        <h2>Protokoll</h2>
+
+        <button class="danger" onclick="clearLog()">
+            Protokoll löschen
+        </button>
+
+        <div id="logList"></div>
+    </div>
+
+</div>
+
+
+<script>
+
+let toiletTrips =
+    JSON.parse(localStorage.getItem("toiletTrips")) || [];
+
+
+function saveData() {
+    localStorage.setItem(
+        "toiletTrips",
+        JSON.stringify(toiletTrips)
+    );
+}
+
+
+function getTime() {
+
+    return new Date().toLocaleTimeString(
+        "de-DE",
+        {
+            hour: "2-digit",
+            minute: "2-digit",
+            second: "2-digit"
+        }
+    );
+}
+
+
+function getDate() {
+
+    return new Date().toLocaleDateString(
+        "de-DE"
+    );
+}
+
+
+function startToilet() {
+
+    const student =
+        document.getElementById("studentId").value.trim();
+
+    const teacher =
+        document.getElementById("teacher").value.trim();
+
+    if (!student || !teacher) {
+
+        document.getElementById("message").textContent =
+            "Bitte Schüler-ID und Lehrkraft eingeben.";
+
+        return;
+    }
+
+
+    // Prüfen, ob dieser Schüler bereits unterwegs ist
+
+    const alreadyActive =
+        toiletTrips.some(
+            trip =>
+                trip.student === student &&
+                trip.endTime === null
+        );
+
+
+    if (alreadyActive) {
+
+        document.getElementById("message").textContent =
+            "Dieser Schüler ist bereits als unterwegs eingetragen.";
+
+        return;
+    }
+
+
+    const trip = {
+
+        id: Date.now(),
+
+        student: student,
+
+        teacher: teacher,
+
+        date: getDate(),
+
+        startTime: getTime(),
+
+        endTime: null
+    };
+
+
+    toiletTrips.push(trip);
+
+    saveData();
+
+    document.getElementById("studentId").value = "";
+
+    document.getElementById("message").textContent =
+        "Toilettengang wurde eingetragen.";
+
+    render();
+}
+
+
+function finishToilet(id) {
+
+    const trip =
+        toiletTrips.find(
+            trip => trip.id === id
+        );
+
+
+    if (!trip) return;
+
+
+    trip.endTime = getTime();
+
+    saveData();
+
+    render();
+}
+
+
+function render() {
+
+    const activeList =
+        document.getElementById("activeList");
+
+    const logList =
+        document.getElementById("logList");
+
+
+    activeList.innerHTML = "";
+    logList.innerHTML = "";
+
+
+    const active =
+        toiletTrips.filter(
+            trip => trip.endTime === null
+        );
+
+
+    if (active.length === 0) {
+
+        activeList.innerHTML =
+            "<p>Momentan ist niemand eingetragen.</p>";
+
+    } else {
+
+        active.forEach(trip => {
+
+            const div =
+                document.createElement("div");
+
+            div.className = "active";
+
+            div.innerHTML = `
+                <strong>${escapeHTML(trip.student)}</strong><br>
+                Lehrkraft: ${escapeHTML(trip.teacher)}<br>
+                Datum: ${trip.date}<br>
+                Beginn: ${trip.startTime}
+
+                <br><br>
+
+                <button onclick="finishToilet(${trip.id})">
+                    Rückkehr eintragen
+                </button>
+            `;
+
+            activeList.appendChild(div);
+        });
+    }
+
+
+    // Neueste Einträge zuerst
+
+    [...toiletTrips]
+        .reverse()
+        .forEach(trip => {
+
+            const div =
+                document.createElement("div");
+
+            div.className =
+                trip.endTime
+                ? "finished"
+                : "active";
+
+
+            div.innerHTML = `
+                <strong>${escapeHTML(trip.student)}</strong><br>
+                Lehrkraft: ${escapeHTML(trip.teacher)}<br>
+                Datum: ${trip.date}<br>
+                Hin
