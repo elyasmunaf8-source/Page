@@ -1,139 +1,550 @@
 <!DOCTYPE html>
 <html lang="de">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Schul-Toilettenverwaltung</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            background: #f2f4f8;
-            margin: 0;
-            padding: 20px;
-        }
+<title>Schul-Toilettenverwaltung</title>
 
-        .container {
-            max-width: 850px;
-            margin: auto;
-        }
+<style>
 
-        h1 {
-            text-align: center;
-        }
+* {
+    box-sizing: border-box;
+}
 
-        .card {
-            background: white;
-            padding: 20px;
-            margin: 15px 0;
-            border-radius: 15px;
-            box-shadow: 0 3px 12px rgba(0,0,0,0.1);
-        }
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background: linear-gradient(135deg, #a8edea, #fed6e3);
+    min-height: 100vh;
+    overflow-x: hidden;
+}
 
-        input, select, button {
-            width: 100%;
-            padding: 12px;
-            margin-top: 8px;
-            margin-bottom: 12px;
-            border-radius: 8px;
-            border: 1px solid #ccc;
-            box-sizing: border-box;
-        }
+.app {
+    width: 100%;
+    max-width: 900px;
+    margin: auto;
+    overflow: hidden;
+}
 
-        button {
-            background: #222;
-            color: white;
-            border: none;
-            cursor: pointer;
-            font-weight: bold;
-        }
+/* HEADER */
 
-        button:hover {
-            background: #444;
-        }
+header {
+    background: rgba(255,255,255,0.95);
+    padding: 20px;
+    text-align: center;
+    box-shadow: 0 3px 15px rgba(0,0,0,0.12);
+}
 
-        .active {
-            background: #fff3cd;
-            border-left: 5px solid #ffbf00;
-            padding: 12px;
-            margin-top: 10px;
-        }
+header h1 {
+    margin: 0;
+    color: #45458c;
+}
 
-        .finished {
-            background: #e8f5e9;
-            border-left: 5px solid #2e7d32;
-            padding: 12px;
-            margin-top: 10px;
-        }
+header p {
+    margin-bottom: 0;
+    color: #777;
+}
 
-        .danger {
-            background: #b00020;
-        }
+/* SEITEN */
 
-        .danger:hover {
-            background: #d0002b;
-        }
+.pages {
+    display: flex;
+    width: 200%;
+    transition: transform 0.35s ease;
+}
 
-        #message {
-            font-weight: bold;
-            text-align: center;
-        }
-    </style>
+.page {
+    width: 50%;
+    padding: 20px;
+}
+
+/* KARTEN */
+
+.card {
+    background: rgba(255,255,255,0.96);
+    padding: 22px;
+    margin-bottom: 20px;
+    border-radius: 20px;
+    box-shadow: 0 6px 20px rgba(0,0,0,0.12);
+}
+
+h2 {
+    color: #5555a5;
+    margin-top: 0;
+}
+
+/* EINGABEN */
+
+label {
+    display: block;
+    font-weight: bold;
+    color: #444;
+    margin-top: 10px;
+}
+
+input,
+textarea {
+    width: 100%;
+    padding: 14px;
+    margin-top: 7px;
+    margin-bottom: 12px;
+    border: 2px solid #ddd;
+    border-radius: 12px;
+    font-size: 16px;
+}
+
+textarea {
+    min-height: 100px;
+    resize: vertical;
+}
+
+/* BUTTONS */
+
+button {
+    border: none;
+    border-radius: 12px;
+    padding: 13px 16px;
+    font-size: 15px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+button:hover {
+    transform: scale(1.02);
+}
+
+.approve {
+    width: 100%;
+    background: #7bed9f;
+    color: #14532d;
+}
+
+.back {
+    width: 100%;
+    margin-top: 12px;
+    background: #70a1ff;
+    color: white;
+}
+
+.mark {
+    width: 100%;
+    margin-top: 10px;
+    background: #ffb142;
+    color: #5a3000;
+}
+
+.report {
+    width: 100%;
+    background: #ff6b81;
+    color: white;
+}
+
+.delete {
+    width: 100%;
+    background: #ff4757;
+    color: white;
+    margin-top: 10px;
+}
+
+/* NAVIGATION */
+
+.navigation {
+    display: flex;
+    gap: 10px;
+    padding: 15px 20px;
+    background: rgba(255,255,255,0.9);
+}
+
+.navigation button {
+    flex: 1;
+    background: #ddd;
+    color: #555;
+}
+
+.navigation button.active {
+    background: #7067d8;
+    color: white;
+}
+
+/* TOILETTENGANG */
+
+.toilet-card {
+    padding: 16px;
+    margin-top: 12px;
+    border-radius: 14px;
+    border-left: 8px solid;
+    transition: 0.5s;
+}
+
+/* GRÜN */
+
+.green {
+    background: #e7faed;
+    border-left-color: #2ed573;
+}
+
+/* GELB */
+
+.yellow {
+    background: #fff6cc;
+    border-left-color: #f9ca24;
+}
+
+/* ROT */
+
+.red {
+    background: #ffe6e6;
+    border-left-color: #ff4757;
+}
+
+/* MARKIERT */
+
+.marked {
+    box-shadow: 0 0 0 3px #ff9f43 inset;
+}
+
+/* BADGES */
+
+.badge {
+    display: inline-block;
+    padding: 5px 9px;
+    margin-top: 8px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: bold;
+}
+
+.warning {
+    background: #ffb142;
+    color: #5a3000;
+}
+
+.danger {
+    background: #ff4757;
+    color: white;
+}
+
+.info {
+    background: #70a1ff;
+    color: white;
+}
+
+/* STATISTIK */
+
+.stats {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+}
+
+.stat {
+    text-align: center;
+    background: #f4f3ff;
+    padding: 15px 8px;
+    border-radius: 15px;
+}
+
+.stat strong {
+    display: block;
+    font-size: 24px;
+    color: #5555a5;
+}
+
+/* MELDUNG */
+
+.message {
+    text-align: center;
+    color: #5555a5;
+    font-weight: bold;
+    margin-top: 12px;
+}
+
+.empty {
+    text-align: center;
+    color: #777;
+}
+
+/* VORFALL */
+
+.incident {
+    padding: 15px;
+    background: #fff0f2;
+    border-left: 7px solid #ff6b81;
+    border-radius: 12px;
+    margin-top: 10px;
+}
+
+/* MOBILE */
+
+@media (max-width: 600px) {
+
+    .stats {
+        grid-template-columns: 1fr;
+    }
+
+    .page {
+        padding: 12px;
+    }
+
+}
+
+</style>
 </head>
+
 
 <body>
 
-<div class="container">
+<div class="app">
 
+<header>
     <h1>🚻 Schul-Toilettenverwaltung</h1>
+    <p>Jungentoilette</p>
+</header>
+
+
+<!-- NAVIGATION -->
+
+<div class="navigation">
+
+    <button
+        id="navHome"
+        class="active"
+        onclick="showPage(0)"
+    >
+        🚻 Toilette
+    </button>
+
+    <button
+        id="navReport"
+        onclick="showPage(1)"
+    >
+        📋 Übersicht
+    </button>
+
+</div>
+
+
+<!-- SEITEN -->
+
+<div
+    class="pages"
+    id="pages"
+>
+
+
+<!-- ==================== SEITE 1 ==================== -->
+
+<div class="page">
 
     <div class="card">
-        <h2>Toilettengang eintragen</h2>
 
-        <label>Schüler-ID</label>
-        <input id="studentId" placeholder="z. B. S-102">
+        <h2>📝 Toilettengang genehmigen</h2>
 
         <label>Lehrkraft</label>
-        <input id="teacher" placeholder="Name der Lehrkraft">
 
-        <button onclick="startToilet()">Toilettengang erlauben</button>
+        <input
+            id="teacher"
+            type="text"
+            placeholder="Name der Lehrkraft"
+        >
 
-        <p id="message"></p>
-    </div>
+        <label>
+            Vorname und Nachname des Schülers
+        </label>
 
+        <input
+            id="studentName"
+            type="text"
+            placeholder="Vorname Nachname"
+        >
 
-    <div class="card">
-        <h2>Aktuelle Toilettengänge</h2>
-        <div id="activeList"></div>
-    </div>
-
-
-    <div class="card">
-        <h2>Protokoll</h2>
-
-        <button class="danger" onclick="clearLog()">
-            Protokoll löschen
+        <button
+            class="approve"
+            onclick="startToilet()"
+        >
+            ✓ Toilette genehmigen
         </button>
 
-        <div id="logList"></div>
+        <div
+            id="message"
+            class="message"
+        ></div>
+
+    </div>
+
+
+    <!-- AKTUELL AUF TOILETTE -->
+
+    <div class="card">
+
+        <h2>🚶 Gerade auf der Toilette</h2>
+
+        <div id="activeList"></div>
+
+    </div>
+
+
+    <!-- MELDEN -->
+
+    <div class="card">
+
+        <h2>🚨 Vorfall melden</h2>
+
+        <label>Beschreibung</label>
+
+        <textarea
+            id="incidentText"
+            placeholder="Was wurde festgestellt?"
+        ></textarea>
+
+        <button
+            class="report"
+            onclick="reportIncident()"
+        >
+            🚨 Vorfall melden
+        </button>
+
+        <div
+            id="incidentMessage"
+            class="message"
+        ></div>
+
     </div>
 
 </div>
 
 
+
+<!-- ==================== SEITE 2 ==================== -->
+
+<div class="page">
+
+    <div class="card">
+
+        <h2>📋 Tagesübersicht</h2>
+
+        <label>Datum auswählen</label>
+
+        <input
+            type="date"
+            id="selectedDate"
+            onchange="renderOverview()"
+        >
+
+    </div>
+
+
+    <!-- STATISTIK -->
+
+    <div class="card">
+
+        <h2>📊 Statistik</h2>
+
+        <div class="stats">
+
+            <div class="stat">
+                <strong id="statTrips">0</strong>
+                Toilettengänge
+            </div>
+
+            <div class="stat">
+                <strong id="statStudents">0</strong>
+                Schüler
+            </div>
+
+            <div class="stat">
+                <strong id="statMarked">0</strong>
+                Markiert
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- PROTOKOLL -->
+
+    <div class="card">
+
+        <h2>🗂️ Protokoll</h2>
+
+        <div id="logList"></div>
+
+    </div>
+
+
+    <!-- VORFÄLLE -->
+
+    <div class="card">
+
+        <h2>🚨 Gemeldete Vorfälle</h2>
+
+        <div id="incidentList"></div>
+
+    </div>
+
+
+    <div class="card">
+
+        <button
+            class="delete"
+            onclick="clearLog()"
+        >
+            🗑️ Gesamtes Protokoll löschen
+        </button>
+
+    </div>
+
+</div>
+
+</div>
+
+</div>
+
+
+
 <script>
 
-let toiletTrips =
-    JSON.parse(localStorage.getItem("toiletTrips")) || [];
+/* =========================
+   DATEN
+========================= */
 
+let toiletTrips =
+    JSON.parse(
+        localStorage.getItem("toiletTrips")
+    ) || [];
+
+
+let incidents =
+    JSON.parse(
+        localStorage.getItem("incidents")
+    ) || [];
+
+
+/* =========================
+   SPEICHERN
+========================= */
 
 function saveData() {
+
     localStorage.setItem(
         "toiletTrips",
         JSON.stringify(toiletTrips)
     );
+
+    localStorage.setItem(
+        "incidents",
+        JSON.stringify(incidents)
+    );
+
 }
 
+
+/* =========================
+   ZEIT
+========================= */
 
 function getTime() {
 
@@ -145,66 +556,168 @@ function getTime() {
             second: "2-digit"
         }
     );
+
 }
 
 
 function getDate() {
 
-    return new Date().toLocaleDateString(
-        "de-DE"
-    );
+    const now = new Date();
+
+    const year =
+        now.getFullYear();
+
+    const month =
+        String(
+            now.getMonth() + 1
+        ).padStart(2, "0");
+
+    const day =
+        String(
+            now.getDate()
+        ).padStart(2, "0");
+
+    return `${year}-${month}-${day}`;
+
 }
 
 
-function startToilet() {
+/* =========================
+   ZEIT IN MINUTEN
+========================= */
 
-    const student =
-        document.getElementById("studentId").value.trim();
+function getDuration(trip) {
 
-    const teacher =
-        document.getElementById("teacher").value.trim();
+    const start =
+        new Date(trip.startTimestamp);
 
-    if (!student || !teacher) {
+    const end =
+        trip.endTimestamp
+        ? new Date(trip.endTimestamp)
+        : new Date();
 
-        document.getElementById("message").textContent =
-            "Bitte Schüler-ID und Lehrkraft eingeben.";
+    return Math.floor(
+        (end - start) / 60000
+    );
 
-        return;
+}
+
+
+/* =========================
+   FARBE BESTIMMEN
+========================= */
+
+function getColorClass(trip) {
+
+    const minutes =
+        getDuration(trip);
+
+
+    if (minutes >= 7) {
+
+        return "red";
+
     }
 
 
-    // Prüfen, ob dieser Schüler bereits unterwegs ist
+    if (minutes >= 5) {
+
+        return "yellow";
+
+    }
+
+
+    return "green";
+
+}
+
+
+/* =========================
+   TOILETTE STARTEN
+========================= */
+
+function startToilet() {
+
+    const teacher =
+        document
+        .getElementById("teacher")
+        .value
+        .trim();
+
+
+    const studentName =
+        document
+        .getElementById("studentName")
+        .value
+        .trim();
+
+
+    if (!teacher || !studentName) {
+
+        document
+        .getElementById("message")
+        .textContent =
+        "Bitte Lehrkraft und Schülernamen eingeben.";
+
+        return;
+
+    }
+
 
     const alreadyActive =
         toiletTrips.some(
             trip =>
-                trip.student === student &&
-                trip.endTime === null
+                trip.studentName
+                === studentName &&
+                trip.endTimestamp
+                === null
         );
 
 
     if (alreadyActive) {
 
-        document.getElementById("message").textContent =
-            "Dieser Schüler ist bereits als unterwegs eingetragen.";
+        document
+        .getElementById("message")
+        .textContent =
+        "Dieser Schüler ist bereits unterwegs.";
 
         return;
+
     }
+
+
+    const now =
+        new Date();
 
 
     const trip = {
 
         id: Date.now(),
 
-        student: student,
+        teacher:
+            teacher,
 
-        teacher: teacher,
+        studentName:
+            studentName,
 
-        date: getDate(),
+        date:
+            getDate(),
 
-        startTime: getTime(),
+        startTime:
+            getTime(),
 
-        endTime: null
+        startTimestamp:
+            now.toISOString(),
+
+        endTime:
+            null,
+
+        endTimestamp:
+            null,
+
+        suspicious:
+            false
+
     };
 
 
@@ -212,102 +725,677 @@ function startToilet() {
 
     saveData();
 
-    document.getElementById("studentId").value = "";
 
-    document.getElementById("message").textContent =
-        "Toilettengang wurde eingetragen.";
+    document
+    .getElementById("studentName")
+    .value = "";
+
+
+    document
+    .getElementById("message")
+    .textContent =
+    "✓ Toilettengang wurde genehmigt.";
+
 
     render();
+
 }
 
+
+/* =========================
+   ZURÜCKGEKOMMEN
+========================= */
 
 function finishToilet(id) {
 
     const trip =
         toiletTrips.find(
-            trip => trip.id === id
+            trip =>
+                trip.id === id
         );
 
 
     if (!trip) return;
 
 
-    trip.endTime = getTime();
+    const now =
+        new Date();
+
+
+    trip.endTime =
+        getTime();
+
+    trip.endTimestamp =
+        now.toISOString();
+
 
     saveData();
 
     render();
+
 }
 
+
+/* =========================
+   MARKIEREN
+========================= */
+
+function toggleSuspicious(id) {
+
+    const trip =
+        toiletTrips.find(
+            trip =>
+                trip.id === id
+        );
+
+
+    if (!trip) return;
+
+
+    trip.suspicious =
+        !trip.suspicious;
+
+
+    saveData();
+
+    render();
+
+}
+
+
+/* =========================
+   VORFALL MELDEN
+========================= */
+
+function reportIncident() {
+
+    const description =
+        document
+        .getElementById("incidentText")
+        .value
+        .trim();
+
+
+    if (!description) {
+
+        document
+        .getElementById("incidentMessage")
+        .textContent =
+        "Bitte eine Beschreibung eingeben.";
+
+        return;
+
+    }
+
+
+    const incident = {
+
+        id: Date.now(),
+
+        date:
+            getDate(),
+
+        time:
+            getTime(),
+
+        description:
+            description
+
+    };
+
+
+    incidents.push(incident);
+
+    saveData();
+
+
+    document
+    .getElementById("incidentText")
+    .value = "";
+
+
+    document
+    .getElementById("incidentMessage")
+    .textContent =
+    "✓ Vorfall wurde gespeichert.";
+
+
+    renderOverview();
+
+}
+
+
+/* =========================
+   SEITE WECHSELN
+========================= */
+
+function showPage(page) {
+
+    const pages =
+        document.getElementById(
+            "pages"
+        );
+
+
+    if (page === 0) {
+
+        pages.style.transform =
+            "translateX(0%)";
+
+    } else {
+
+        pages.style.transform =
+            "translateX(-50%)";
+
+        renderOverview();
+
+    }
+
+
+    document
+    .getElementById("navHome")
+    .classList
+    .toggle(
+        "active",
+        page === 0
+    );
+
+
+    document
+    .getElementById("navReport")
+    .classList
+    .toggle(
+        "active",
+        page === 1
+    );
+
+}
+
+
+/* =========================
+   HAUPTANZEIGE
+========================= */
 
 function render() {
 
     const activeList =
-        document.getElementById("activeList");
-
-    const logList =
-        document.getElementById("logList");
+        document.getElementById(
+            "activeList"
+        );
 
 
     activeList.innerHTML = "";
-    logList.innerHTML = "";
 
 
     const active =
         toiletTrips.filter(
-            trip => trip.endTime === null
+            trip =>
+                trip.endTimestamp === null
         );
 
 
     if (active.length === 0) {
 
         activeList.innerHTML =
-            "<p>Momentan ist niemand eingetragen.</p>";
+            '<p class="empty">' +
+            'Momentan ist niemand auf der Toilette.' +
+            '</p>';
 
-    } else {
-
-        active.forEach(trip => {
-
-            const div =
-                document.createElement("div");
-
-            div.className = "active";
-
-            div.innerHTML = `
-                <strong>${escapeHTML(trip.student)}</strong><br>
-                Lehrkraft: ${escapeHTML(trip.teacher)}<br>
-                Datum: ${trip.date}<br>
-                Beginn: ${trip.startTime}
-
-                <br><br>
-
-                <button onclick="finishToilet(${trip.id})">
-                    Rückkehr eintragen
-                </button>
-            `;
-
-            activeList.appendChild(div);
-        });
     }
 
 
-    // Neueste Einträge zuerst
+    active.forEach(trip => {
 
-    [...toiletTrips]
-        .reverse()
-        .forEach(trip => {
+        const div =
+            document.createElement(
+                "div"
+            );
 
-            const div =
-                document.createElement("div");
 
-            div.className =
+        div.className =
+            "toilet-card " +
+            getColorClass(trip) +
+            (trip.suspicious
+                ? " marked"
+                : "");
+
+
+        const minutes =
+            getDuration(trip);
+
+
+        div.innerHTML = `
+
+            <strong>
+                👤 ${escapeHTML(
+                    trip.studentName
+                )}
+            </strong>
+
+            <br><br>
+
+            👩‍🏫 Lehrkraft:
+            ${escapeHTML(
+                trip.teacher
+            )}
+
+            <br>
+
+            🕐 Beginn:
+            ${trip.startTime}
+
+            <br>
+
+            ⏱️ Dauer:
+            <span class="duration">
+                ${minutes} Minute${
+                    minutes === 1
+                    ? ""
+                    : "n"
+                }
+            </span>
+
+            ${
+                trip.suspicious
+                ? `
+                    <br>
+                    <span class="badge warning">
+                        ⚠️ Zur Überprüfung markiert
+                    </span>
+                `
+                : ""
+            }
+
+
+            <button
+                class="back"
+                onclick="finishToilet(
+                    ${trip.id}
+                )"
+            >
+                ✓ Zurückgekommen
+            </button>
+
+
+            <button
+                class="mark"
+                onclick="toggleSuspicious(
+                    ${trip.id}
+                )"
+            >
+                ${
+                    trip.suspicious
+                    ? "✓ Markierung entfernen"
+                    : "⚠️ Zur Überprüfung markieren"
+                }
+            </button>
+
+        `;
+
+
+        activeList.appendChild(div);
+
+    });
+
+}
+
+
+/* =========================
+   ÜBERSICHT
+========================= */
+
+function renderOverview() {
+
+    const selected =
+        document
+        .getElementById(
+            "selectedDate"
+        )
+        .value
+        || getDate();
+
+
+    const trips =
+        toiletTrips.filter(
+            trip =>
+                trip.date === selected
+        );
+
+
+    const uniqueStudents =
+        new Set(
+            trips.map(
+                trip =>
+                    trip.studentName
+            )
+        );
+
+
+    const marked =
+        trips.filter(
+            trip =>
+                trip.suspicious
+        );
+
+
+    document
+    .getElementById(
+        "statTrips"
+    )
+    .textContent =
+    trips.length;
+
+
+    document
+    .getElementById(
+        "statStudents"
+    )
+    .textContent =
+    uniqueStudents.size;
+
+
+    document
+    .getElementById(
+        "statMarked"
+    )
+    .textContent =
+    marked.length;
+
+
+    const logList =
+        document.getElementById(
+            "logList"
+        );
+
+
+    logList.innerHTML = "";
+
+
+    if (trips.length === 0) {
+
+        logList.innerHTML =
+            '<p class="empty">' +
+            'Keine Einträge für diesen Tag.' +
+            '</p>';
+
+    }
+
+
+    [...trips]
+    .reverse()
+    .forEach(trip => {
+
+        const div =
+            document.createElement(
+                "div"
+            );
+
+
+        const color =
+            getColorClass(trip);
+
+
+        div.className =
+            "toilet-card " +
+            color +
+            (trip.suspicious
+                ? " marked"
+                : "");
+
+
+        div.innerHTML = `
+
+            <strong>
+                👤 ${escapeHTML(
+                    trip.studentName
+                )}
+            </strong>
+
+            <br>
+
+            👩‍🏫 ${escapeHTML(
+                trip.teacher
+            )}
+
+            <br>
+
+            🟢 Hin:
+            ${trip.startTime}
+
+            <br>
+
+            🔵 Zurück:
+            ${
                 trip.endTime
-                ? "finished"
-                : "active";
+                || "noch unterwegs"
+            }
+
+            ${
+                trip.suspicious
+                ? `
+                    <br>
+                    <span class="badge warning">
+                        ⚠️ Zur Überprüfung markiert
+                    </span>
+                `
+                : ""
+            }
+
+        `;
 
 
-            div.innerHTML = `
-                <strong>${escapeHTML(trip.student)}</strong><br>
-                Lehrkraft: ${escapeHTML(trip.teacher)}<br>
-                Datum: ${trip.date}<br>
-                Hin
+        logList.appendChild(div);
+
+    });
+
+
+    renderIncidents(selected);
+
+}
+
+
+/* =========================
+   VORFÄLLE
+========================= */
+
+function renderIncidents(date) {
+
+    const list =
+        document.getElementById(
+            "incidentList"
+        );
+
+
+    list.innerHTML = "";
+
+
+    const selectedIncidents =
+        incidents.filter(
+            incident =>
+                incident.date === date
+        );
+
+
+    if (
+        selectedIncidents.length === 0
+    ) {
+
+        list.innerHTML =
+            '<p class="empty">' +
+            'Keine Vorfälle gemeldet.' +
+            '</p>';
+
+        return;
+
+    }
+
+
+    [...selectedIncidents]
+    .reverse()
+    .forEach(incident => {
+
+        const div =
+            document.createElement(
+                "div"
+            );
+
+
+        div.className =
+            "incident";
+
+
+        div.innerHTML = `
+
+            <strong>
+                🚨 ${incident.time}
+            </strong>
+
+            <br><br>
+
+            ${escapeHTML(
+                incident.description
+            )}
+
+        `;
+
+
+        list.appendChild(div);
+
+    });
+
+}
+
+
+/* =========================
+   DATEN LÖSCHEN
+========================= */
+
+function clearLog() {
+
+    const answer =
+        confirm(
+            "Soll wirklich das gesamte Protokoll gelöscht werden?"
+        );
+
+
+    if (!answer) return;
+
+
+    toiletTrips = [];
+
+    incidents = [];
+
+
+    saveData();
+
+    render();
+
+    renderOverview();
+
+}
+
+
+/* =========================
+   SICHERHEIT
+========================= */
+
+function escapeHTML(text) {
+
+    const div =
+        document.createElement(
+            "div"
+        );
+
+
+    div.textContent =
+        text;
+
+
+    return div.innerHTML;
+
+}
+
+
+/* =========================
+   SWIPE AUF HANDY
+========================= */
+
+let touchStartX = 0;
+
+
+document.addEventListener(
+    "touchstart",
+    function(event) {
+
+        touchStartX =
+            event.changedTouches[0].screenX;
+
+    }
+);
+
+
+document.addEventListener(
+    "touchend",
+    function(event) {
+
+        const touchEndX =
+            event.changedTouches[0].screenX;
+
+
+        const difference =
+            touchEndX - touchStartX;
+
+
+        if (Math.abs(difference) < 70) {
+            return;
+        }
+
+
+        if (difference < 0) {
+
+            showPage(1);
+
+        } else {
+
+            showPage(0);
+
+        }
+
+    }
+);
+
+
+/* =========================
+   AUTOMATISCHE AKTUALISIERUNG
+========================= */
+
+setInterval(
+    function() {
+
+        render();
+
+    },
+    1000
+);
+
+
+/* =========================
+   START
+========================= */
+
+document
+.getElementById(
+    "selectedDate"
+)
+.value =
+getDate();
+
+
+render();
+
+renderOverview();
+
+</script>
+
+</body>
+</html>
